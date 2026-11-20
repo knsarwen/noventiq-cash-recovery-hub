@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noventiq Cash Recovery Hub - Financial Operations & Working Capital Analytics</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              red: '#E60028',
+              redHover: '#CC0024',
+              redLight: '#FEF2F2',
+              redBorder: '#FECACA',
+              dark: '#0F172A',
+              slate: '#1E293B',
+              border: '#E2E8F0',
+              bgLight: '#F8FAFC'
+            }
+          },
+          boxShadow: {
+            'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+            'card': '0 2px 8px -2px rgba(15, 23, 42, 0.06), 0 1px 4px -1px rgba(15, 23, 42, 0.04)',
+            'floating': '0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #F8FAFC;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col antialiased bg-slate-50">
+
+  <!-- ======================================================== -->
+  <!-- 1. TOP GLOBAL ENTERPRISE HEADER                           -->
+  <!-- ======================================================== -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-subtle">
+    <!-- Top System Utility Row -->
+    <div class="w-full px-6 2xl:px-8 py-2 flex items-center justify-between border-b border-slate-100 text-[11px] bg-slate-50/70">
+      <div class="flex items-center space-x-4 text-slate-500">
+        <span class="flex items-center font-medium text-slate-700">
+          <i data-lucide="building-2" class="w-3.5 h-3.5 mr-1.5 text-slate-500"></i>
+          Entity: <span class="font-bold text-slate-900 ml-1">Noventiq Solutions India Pvt Ltd</span> (HQ - APAC Hub)
+        </span>
+        <span class="text-slate-300">|</span>
+        <span class="flex items-center text-slate-600">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+          NetSuite AR Ingestion: <span class="font-semibold text-slate-800 ml-1">Staged & Current</span>
+        </span>
+        <span class="text-slate-300 hidden md:inline">|</span>
+        <span class="flex items-center text-slate-600 hidden md:flex">
+          <i data-lucide="shield" class="w-3.5 h-3.5 mr-1 text-slate-500"></i>
+          Statutory Policy: <span class="font-semibold text-slate-800 ml-1">Section 194C / 194J Auto-Detect</span>
+        </span>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-500 hidden lg:inline font-mono">IST (UTC+5:30) · Q3 Fiscal 2026</span>
+        <span class="text-slate-300 hidden lg:inline">|</span>
+        <span class="text-slate-500 flex items-center">
+          <i data-lucide="lock" class="w-3 h-3 mr-1 text-emerald-600"></i>
+          <span class="font-medium text-slate-600">ISO 27001 Certified Financial Pipeline</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <div class="w-full px-6 2xl:px-8 py-2.5 flex items-center justify-between bg-white">
+      <!-- Left: Brand Logo & Title -->
+      <div class="flex items-center space-x-4">
+        <img src="nvoentiq_logo-removebg-preview.png" alt="Noventiq Logo" class="h-8 w-auto object-contain">
+        <div class="h-6 w-px bg-slate-200"></div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-base font-extrabold tracking-tight text-slate-900">Cash Recovery Hub</span>
+            <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 font-bold bg-red-50 text-brand-red border border-red-200 rounded-md">Financial Operations</span>
+          </div>
+          <p class="text-[11px] text-slate-500 font-medium">Automated Receivables Prioritisation, Remittance Reconciliation & Dunning Governance</p>
+        </div>
+      </div>
+
+      <!-- Right: Functional Controls -->
+      <div class="flex items-center space-x-4">
+        <!-- Currency Engine Toggle -->
+        <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 shadow-2xs">
+          <button id="curr-inr-btn" onclick="setCurrency('INR')" class="px-2.5 py-1 text-xs font-bold rounded-md bg-white text-slate-900 shadow-xs transition-all cursor-pointer">
+            INR (₹)
+          </button>
+          <button id="curr-usd-btn" onclick="setCurrency('USD')" class="px-2.5 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900 transition-all cursor-pointer">
+            USD ($)
+          </button>
+        </div>
+        <div class="text-[11px] text-slate-400 font-mono hidden xl:block">1 USD = ₹83.50</div>
+
+        <div class="h-5 w-px bg-slate-200 hidden md:block"></div>
+
+        <!-- Role-Based Access Control (RBAC) -->
+        <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-1.5 text-xs text-slate-500 font-semibold hidden lg:flex">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+            <span>Active Role:</span>
+          </div>
+          <select id="rbac-role-select" onchange="handleRoleChange(this.value)" class="text-xs font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-red transition-colors cursor-pointer">
+            <option value="ALL">Credit & Collections Controller (Full Approval & Ledger)</option>
+            <option value="Rajesh Verma">Rajesh Verma (Sales AM · West & Enterprise)</option>
+            <option value="Ananya Roy">Ananya Roy (Sales AM · North & Govt)</option>
+            <option value="Vikram Mehta">Vikram Mehta (Sales AM · South Enterprise)</option>
+            <option value="Amitabh Sen">Amitabh Sen (Sales AM · BFSI Strategic)</option>
+          </select>
+        </div>
+
+        <div class="h-5 w-px bg-slate-200 hidden md:block"></div>
+
+        <!-- Reload Live Demo Dataset Button -->
+        <button onclick="resetDemoData()" title="Reload all open invoices and reset simulated settlements" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-bold bg-brand-red hover:bg-brand-redHover text-white rounded-lg shadow-xs transition-all hover:scale-[1.02] cursor-pointer">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>Reload Live Dataset</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active AM Data Isolation Alert Banner -->
+    <div id="am-isolation-banner" class="hidden bg-amber-50 border-t border-b border-amber-200 px-6 py-2 flex items-center justify-between text-xs text-amber-900 shadow-2xs">
+      <div class="flex items-center space-x-2.5">
+        <i data-lucide="lock" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
+        <span><strong>Active Data Isolation:</strong> Viewing restricted territory accounts for <strong id="am-banner-name" class="underline decoration-amber-500">Rajesh Verma</strong>. Global company accounts and controller bulk actions are locked to prevent cross-portfolio leakage.</span>
+      </div>
+      <button onclick="resetRoleToAll()" class="px-2.5 py-1 text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 rounded border border-amber-300 transition-colors cursor-pointer">
+        Switch to Global Controller View
+      </button>
+    </div>
+
+    <!-- MAIN APP NAVIGATION TABS -->
+    <div class="w-full px-6 2xl:px-8 flex space-x-8 border-t border-slate-200 bg-white shadow-2xs">
+      <button onclick="switchTab('tab-dashboard')" id="nav-tab-dashboard" class="py-3 px-1 border-b-2 border-brand-red text-xs font-extrabold text-brand-red flex items-center space-x-2 transition-colors cursor-pointer">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+        <span>Executive Cockpit</span>
+      </button>
+
+      <button onclick="switchTab('tab-ledger')" id="nav-tab-ledger" class="py-3 px-1 border-b-2 border-transparent text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center space-x-2 transition-colors cursor-pointer">
+        <i data-lucide="table" class="w-4 h-4"></i>
+        <span>AR Master Ledger</span>
+        <span id="badge-ledger-count" class="ml-1 px-1.5 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-700 rounded-full border border-slate-200">8 Invoices</span>
+      </button>
+
+      <button onclick="switchTab('tab-warroom')" id="nav-tab-warroom" class="py-3 px-1 border-b-2 border-transparent text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center space-x-2 transition-colors cursor-pointer">
+        <i data-lucide="users" class="w-4 h-4"></i>
+        <span>Customer Collections 360 War Room</span>
+        <span class="ml-1 px-1.5 py-0.5 text-[10px] font-bold bg-red-100 text-brand-red rounded-full border border-red-200">Action Required</span>
+      </button>
+
+      <button onclick="switchTab('tab-ingestion')" id="nav-tab-ingestion" class="py-3 px-1 border-b-2 border-transparent text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center space-x-2 transition-colors cursor-pointer">
+        <i data-lucide="file-up" class="w-4 h-4"></i>
+        <span>Data Ingestion & Staging Gateway</span>
+        <span class="ml-1 px-1.5 py-0.5 text-[10px] font-bold bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">3 Active Feeds</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- 2. MAIN APPLICATION CONTENT (CENTERED ENTERPRISE MAX-W)   -->
+  <!-- ======================================================== -->
+  <main class="flex-1 w-full max-w-[1536px] mx-auto px-4 sm:px-6 2xl:px-8 py-6 custom-scroll">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: EXECUTIVE DASHBOARD                 -->
+    <!-- ========================================== -->
+    <div id="tab-dashboard" class="space-y-6">
+
+      <!-- TOP METRIC CARDS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Total Outstanding AR -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card hover:border-slate-300 transition-all relative overflow-hidden group">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            <span>Total Outstanding AR</span>
+            <div class="p-2 bg-slate-50 group-hover:bg-red-50 rounded-lg border border-slate-200 group-hover:border-red-200 text-slate-600 group-hover:text-brand-red transition-colors">
+              <i data-lucide="layers" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div id="kpi-total-ar" class="text-2xl 2xl:text-3xl font-black text-slate-900 tracking-tight">₹ 21,45,000</div>
+          <div class="mt-2.5 flex items-center justify-between text-xs pt-2 border-t border-slate-100">
+            <span class="text-rose-600 font-semibold flex items-center">
+              <i data-lucide="alert-circle" class="w-3.5 h-3.5 mr-1"></i>
+              <span id="kpi-overdue-count">6 Accounts requiring resolution</span>
+            </span>
+            <span class="text-[11px] font-medium text-slate-400">NetSuite Live</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Unallocated Bank Receipts -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card hover:border-slate-300 transition-all relative overflow-hidden group">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            <span>Unallocated Bank Deposits</span>
+            <div class="p-2 bg-amber-50 rounded-lg border border-amber-200 text-amber-600 transition-colors">
+              <i data-lucide="wallet" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div id="kpi-bank-unallocated" class="text-2xl 2xl:text-3xl font-black text-amber-600 tracking-tight">₹ 4,43,000</div>
+          <div class="mt-2.5 flex items-center justify-between text-xs pt-2 border-t border-slate-100">
+            <span class="text-amber-700 font-semibold flex items-center">
+              <i data-lucide="clock" class="w-3.5 h-3.5 mr-1"></i>
+              <span id="kpi-bank-deposits-count">4 Deposits awaiting match</span>
+            </span>
+            <span class="text-[11px] font-semibold text-emerald-600">3 Ready</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Cash Reconciled Today -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card hover:border-slate-300 transition-all relative overflow-hidden group">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            <span>Cash Reconciled Today</span>
+            <div class="p-2 bg-emerald-50 rounded-lg border border-emerald-200 text-emerald-600 transition-colors">
+              <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div id="kpi-cash-recovered" class="text-2xl 2xl:text-3xl font-black text-emerald-600 tracking-tight">₹ 0</div>
+          <div class="mt-2.5 flex items-center justify-between text-xs pt-2 border-t border-slate-100">
+            <span class="text-slate-600 font-semibold flex items-center">
+              <i data-lucide="file-check" class="w-3.5 h-3.5 mr-1 text-slate-400"></i>
+              <span id="kpi-settled-invoices-count">0 Invoices settled in NetSuite</span>
+            </span>
+            <span class="text-[11px] font-medium text-slate-400">Simulated JRN</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Estimated DSO -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card hover:border-slate-300 transition-all relative overflow-hidden group">
+          <div class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            <span>Days Sales Outstanding (DSO)</span>
+            <div class="p-2 bg-blue-50 rounded-lg border border-blue-200 text-blue-600 transition-colors">
+              <i data-lucide="trending-down" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="text-2xl 2xl:text-3xl font-black text-slate-900 tracking-tight">42.5 Days</div>
+          <div class="mt-2.5 flex items-center justify-between text-xs pt-2 border-t border-slate-100">
+            <span class="text-emerald-600 font-semibold flex items-center">
+              <i data-lucide="arrow-down-right" class="w-3.5 h-3.5 mr-1"></i>
+              <span>-4.5 Days recovery velocity</span>
+            </span>
+            <span class="text-[11px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">Target: 38d</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXECUTIVE SUB-VIEW SWITCHER -->
+      <div class="bg-white p-1 rounded-xl border border-slate-200 shadow-2xs flex space-x-1 text-xs font-bold">
+        <button onclick="switchExecutiveSubView('aging-view')" id="btn-subview-aging" class="flex-1 py-2.5 px-3 rounded-lg bg-slate-900 text-white shadow-xs flex items-center justify-center space-x-2 transition-all cursor-pointer">
+          <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+          <span>12-Month Overdue Reduction & Aging Maturity Sequence</span>
+        </button>
+        <button onclick="switchExecutiveSubView('dso-view')" id="btn-subview-dso" class="flex-1 py-2.5 px-3 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center space-x-2 transition-all cursor-pointer">
+          <i data-lucide="line-chart" class="w-4 h-4"></i>
+          <span>DSO Reduction Trajectory & MoM Collections Radar</span>
+        </button>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- SUB-VIEW 1: 12-MONTH OVERDUE HISTORICAL    -->
+      <!-- ========================================== -->
+      <div id="subview-aging-container" class="bg-white p-6 rounded-xl border border-slate-200 shadow-card space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-100 gap-3">
+          <div>
+            <div class="flex items-center space-x-2">
+              <div class="p-1.5 bg-red-50 text-brand-red rounded-lg">
+                <i data-lucide="calendar-range" class="w-4 h-4"></i>
+              </div>
+              <h2 class="text-base font-extrabold text-slate-900">>90 Days Overdue Historical Reduction Trend (12-Month Sequence)</h2>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              Deterministic 12-month sequence tracking 3 aging tiers: 91-180 Days, 181-365 Days, and >365 Days across the fiscal year.
+            </p>
+          </div>
+
+          <!-- Chart Controls -->
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3 text-xs font-medium">
+              <span class="flex items-center text-slate-700"><span class="w-3 h-3 rounded-xs bg-indigo-600 inline-block mr-1.5"></span> >365 Days</span>
+              <span class="flex items-center text-slate-700"><span class="w-3 h-3 rounded-xs bg-red-600 inline-block mr-1.5"></span> 181-365 Days</span>
+              <span class="flex items-center text-slate-700"><span class="w-3 h-3 rounded-xs bg-rose-400 inline-block mr-1.5"></span> 91-180 Days</span>
+              <span class="flex items-center text-slate-700"><span class="w-3 h-0.5 bg-blue-700 inline-block mr-1.5"></span> Overdue Trend</span>
+            </div>
+
+            <div class="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-bold">
+              <button onclick="filterHistoricalChart('all')" id="btn-chart-all" class="px-3 py-1 rounded-md bg-white text-slate-900 shadow-xs cursor-pointer">Total Overdue</button>
+              <button onclick="filterHistoricalChart('365')" id="btn-chart-365" class="px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 cursor-pointer">>365 Days Only</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12-Month Full-Width Stacked Bar Chart & Trend Line -->
+        <div class="pt-4">
+          <div class="relative w-full h-56">
+            <!-- Background Grid Horizontal Lines -->
+            <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+              <div class="border-b border-dashed border-slate-200 w-full text-[10px] text-slate-400 flex justify-between"><span>₹ 80L / $96k</span></div>
+              <div class="border-b border-dashed border-slate-200 w-full text-[10px] text-slate-400 flex justify-between"><span>₹ 60L / $72k</span></div>
+              <div class="border-b border-dashed border-slate-200 w-full text-[10px] text-slate-400 flex justify-between"><span>₹ 40L / $48k</span></div>
+              <div class="border-b border-dashed border-slate-200 w-full text-[10px] text-slate-400 flex justify-between"><span>₹ 20L / $24k</span></div>
+              <div class="border-b border-slate-200 w-full text-[10px] text-slate-400"><span>₹ 0</span></div>
+            </div>
+
+            <!-- Overlaid SVG Trend Polyline -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" preserveAspectRatio="none" viewBox="0 0 1200 200">
+              <polyline
+                id="chart-trend-polyline"
+                fill="none"
+                stroke="#1D4ED8"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                points="
+                  50,33
+                  150,43
+                  250,37
+                  350,52
+                  450,56
+                  550,116
+                  650,112
+                  750,42
+                  850,61
+                  950,68
+                  1050,91
+                  1150,116
+                "
+              />
+              <circle cx="50" cy="33" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="150" cy="43" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="250" cy="37" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="350" cy="52" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="450" cy="56" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="550" cy="116" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="650" cy="112" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="750" cy="42" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="850" cy="61" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="950" cy="68" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="1050" cy="91" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+              <circle cx="1150" cy="116" r="4.5" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5"/>
+            </svg>
+
+            <!-- 12 Responsive Grid Columns with Stacked Bars -->
+            <div id="historical-bars-grid" class="relative z-0 grid grid-cols-12 gap-2 sm:gap-3 lg:gap-4 h-full items-end px-2">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- 12-Month Column Footer: Labels and Interactive Value Badges -->
+          <div id="historical-pills-grid" class="grid grid-cols-12 gap-2 sm:gap-3 lg:gap-4 mt-4 px-2 pt-2 border-t border-slate-100 text-center">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SUB-VIEW 2: DSO & REAL MoM DUAL-BAR CHART (EXPANDED)    -->
+      <!-- ======================================================== -->
+      <div id="subview-dso-container" class="hidden bg-white p-6 rounded-xl border border-slate-200 shadow-card space-y-6" style="display: none;">
+        <!-- DSO Header Engine Summary -->
+        <div class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded bg-brand-red text-white">NetSuite Automated Engine</span>
+              <span class="text-xs text-slate-400 font-mono">DSO = (Ending AR / Credit Sales) × 30 Days</span>
+            </div>
+            <div class="text-xl font-black text-white mt-1">Estimated DSO: <span class="text-emerald-400">42.5 Days</span> <span class="text-xs font-semibold text-slate-300 ml-2">(-4.5d vs Previous Quarter)</span></div>
+          </div>
+
+          <div class="flex items-center space-x-6 text-xs font-mono">
+            <div>
+              <span class="text-slate-400 block text-[10px] uppercase">NetSuite Ending AR</span>
+              <span id="dso-ending-ar" class="font-bold text-slate-200 text-sm">₹ 21,45,000</span>
+            </div>
+            <div class="h-6 w-px bg-slate-700"></div>
+            <div>
+              <span class="text-slate-400 block text-[10px] uppercase">Monthly Sales Target</span>
+              <span id="dso-monthly-sales" class="font-bold text-slate-200 text-sm">₹ 15,15,000</span>
+            </div>
+            <div class="h-6 w-px bg-slate-700"></div>
+            <div>
+              <span class="text-slate-400 block text-[10px] uppercase">Days in Period</span>
+              <span class="font-bold text-slate-200 text-sm">30 Days</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7-Month DSO Reduction Trajectory Curve with Responsive Y-Axis -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-slate-50/50">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div>
+              <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">7-Month DSO Reduction Trajectory (Target: 38 Days)</h3>
+              <p class="text-[11px] text-slate-500">Continuous drop from 62.0 Days down to current 42.5 Days</p>
+            </div>
+            <span class="px-2.5 py-1 text-xs font-bold bg-emerald-100 text-emerald-800 rounded-md">Recovery Acceleration: +18.4%</span>
+          </div>
+
+          <div class="flex mt-4 items-stretch">
+            <!-- Left Y-Axis Labels -->
+            <div class="flex flex-col justify-between text-[10px] font-mono font-semibold text-slate-400 pr-3 pb-6 text-right w-12 border-r border-slate-200">
+              <span>65 d</span>
+              <span>60 d</span>
+              <span>55 d</span>
+              <span>50 d</span>
+              <span>45 d</span>
+              <span class="text-emerald-600 font-bold">38 d</span>
+              <span>30 d</span>
+            </div>
+
+            <!-- Chart Drawing Area -->
+            <div class="flex-1 relative h-48 pl-2">
+              <svg class="w-full h-full" viewBox="0 0 1000 160" preserveAspectRatio="none">
+                <!-- Grid Lines -->
+                <line x1="0" y1="16" x2="1000" y2="16" stroke="#E2E8F0" stroke-dasharray="3 3"/>
+                <line x1="0" y1="42" x2="1000" y2="42" stroke="#E2E8F0" stroke-dasharray="3 3"/>
+                <line x1="0" y1="68" x2="1000" y2="68" stroke="#E2E8F0" stroke-dasharray="3 3"/>
+                <line x1="0" y1="94" x2="1000" y2="94" stroke="#E2E8F0" stroke-dasharray="3 3"/>
+                <line x1="0" y1="120" x2="1000" y2="120" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <line x1="0" y1="150" x2="1000" y2="150" stroke="#E2E8F0" stroke-dasharray="3 3"/>
+
+                <!-- Area Fill -->
+                <defs>
+                  <linearGradient id="dsoAreaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.30"/>
+                    <stop offset="100%" stop-color="#3B82F6" stop-opacity="0.02"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 70,30 C 220,38 370,68 520,88 S 820,110 930,108 L 930,158 L 70,158 Z" fill="url(#dsoAreaGrad)"/>
+                <!-- Smooth Trajectory Curve -->
+                <path d="M 70,30 C 220,38 370,68 520,88 S 820,110 930,108" fill="none" stroke="#2563EB" stroke-width="3.5" stroke-linecap="round"/>
+
+                <!-- 7 Data Points -->
+                <circle cx="70" cy="30" r="5" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+                <circle cx="213" cy="38" r="5" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+                <circle cx="356" cy="58" r="5" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+                <circle cx="500" cy="78" r="5" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+                <circle cx="643" cy="94" r="5" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+                <circle cx="786" cy="104" r="5" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+                <circle cx="930" cy="108" r="6" fill="#E60028" stroke="#FFFFFF" stroke-width="3"/>
+              </svg>
+
+              <!-- 7 Month Labels -->
+              <div class="grid grid-cols-7 text-center text-[11px] font-semibold text-slate-600 mt-2">
+                <div>May 26 <span class="block text-slate-400 font-mono text-[10px]">62.0d</span></div>
+                <div>Jun 26 <span class="block text-slate-400 font-mono text-[10px]">60.5d</span></div>
+                <div>Jul 26 <span class="block text-slate-400 font-mono text-[10px]">56.0d</span></div>
+                <div>Aug 26 <span class="block text-slate-400 font-mono text-[10px]">51.2d</span></div>
+                <div>Sep 26 <span class="block text-slate-400 font-mono text-[10px]">47.8d</span></div>
+                <div>Oct 26 <span class="block text-slate-400 font-mono text-[10px]">44.0d</span></div>
+                <div class="text-brand-red font-bold">Nov 26 (Live) <span class="block text-brand-red font-mono text-[10px] font-bold">42.5d</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REAL VISUAL DUAL-BAR CHART: Month-over-Month (MoM) Total AR vs. Actual Collection Performance -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
+            <div>
+              <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Month-over-Month (MoM) Total AR vs. Actual Collection Performance</h3>
+              <p class="text-[11px] text-slate-500">Visual comparison of gross AR billing exposure vs. actual cash collected</p>
+            </div>
+            <!-- Legend Indicators -->
+            <div class="flex items-center space-x-4 text-xs font-medium">
+              <span class="flex items-center text-slate-700"><span class="w-3 h-3 rounded-xs bg-blue-500 inline-block mr-1.5"></span> Total AR Outstanding</span>
+              <span class="flex items-center text-slate-700"><span class="w-3 h-3 rounded-xs bg-emerald-500 inline-block mr-1.5"></span> Actual Collections</span>
+              <span class="flex items-center text-slate-700"><span class="w-3 h-0.5 bg-red-600 inline-block mr-1.5"></span> Collection Rate (%)</span>
+            </div>
+          </div>
+
+          <!-- Dual-Bar Visual Layout with Left & Right Y-Axes -->
+          <div class="flex items-stretch mt-4 pt-2">
+            <!-- Left Y-Axis (Values) -->
+            <div class="flex flex-col justify-between text-[10px] font-mono font-semibold text-slate-400 pr-2 pb-6 text-right w-14 border-r border-slate-200">
+              <span id="mom-y-top">₹ 30L</span>
+              <span id="mom-y-mid2">₹ 20L</span>
+              <span id="mom-y-mid1">₹ 10L</span>
+              <span>₹ 0</span>
+            </div>
+
+            <!-- Center Chart Area: 12 Columns with Dual Bars + Overlaid Line -->
+            <div class="flex-1 relative h-52 pl-2">
+              <!-- Background grid lines -->
+              <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40 pb-6">
+                <div class="border-b border-dashed border-slate-200 w-full"></div>
+                <div class="border-b border-dashed border-slate-200 w-full"></div>
+                <div class="border-b border-dashed border-slate-200 w-full"></div>
+                <div class="border-b border-slate-200 w-full"></div>
+              </div>
+
+              <!-- Overlaid SVG Line for Collection Rate % -->
+              <svg class="absolute inset-0 w-full h-[calc(100%-24px)] pointer-events-none z-10" preserveAspectRatio="none" viewBox="0 0 1200 160">
+                <polyline
+                  fill="none"
+                  stroke="#DC2626"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  points="
+                    50,54
+                    150,49
+                    250,51
+                    350,49
+                    450,46
+                    550,51
+                    650,57
+                    750,44
+                    850,44
+                    950,41
+                    1050,35
+                    1150,27
+                  "
+                />
+                <circle cx="50" cy="54" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="150" cy="49" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="250" cy="51" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="350" cy="49" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="450" cy="46" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="550" cy="51" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="650" cy="57" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="750" cy="44" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="850" cy="44" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="950" cy="41" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="1050" cy="35" r="3.5" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
+                <circle cx="1150" cy="27" r="4.5" fill="#DC2626" stroke="#FFFFFF" stroke-width="2"/>
+              </svg>
+
+              <!-- 12-Month Dual Bar Columns Container -->
+              <div id="mom-bars-grid" class="relative z-0 grid grid-cols-12 gap-1 sm:gap-2 h-full items-end pb-6 px-1">
+                <!-- Rendered dynamically -->
+              </div>
+
+              <!-- Month Labels Row -->
+              <div id="mom-labels-grid" class="grid grid-cols-12 gap-1 sm:gap-2 text-center text-[10px] font-semibold text-slate-600 border-t border-slate-200 pt-1">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Right Y-Axis (Percentage) -->
+            <div class="flex flex-col justify-between text-[10px] font-mono font-semibold text-rose-500 pl-2 pb-6 text-left w-12 border-l border-slate-200">
+              <span>100%</span>
+              <span>75%</span>
+              <span>50%</span>
+              <span>25%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOWER DASHBOARD GRID: AGING DISTRIBUTION + SALES PORTFOLIO + DISPUTE DONUT -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Column 1: Operational AR Aging Breakdown (Drilldownable) -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="pie-chart" class="w-4 h-4 text-slate-700"></i>
+                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">AR Aging Distribution</h3>
+              </div>
+              <span class="text-xs text-brand-red font-semibold cursor-pointer hover:underline" onclick="switchTab('tab-ledger')">View All Ledger &rarr;</span>
+            </div>
+
+            <div class="space-y-4 mt-4">
+              <!-- Current (1-30d) -->
+              <div onclick="filterLedgerByAging('Current (1-30 Days)')" class="group cursor-pointer hover:bg-slate-50 p-2 rounded-lg transition-colors border border-transparent hover:border-slate-200">
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="font-medium text-slate-700 group-hover:text-brand-red flex items-center">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block mr-2"></span>
+                    Current (1-30 Days)
+                  </span>
+                  <span id="aging-val-current" class="font-bold text-slate-900">₹ 5,30,000</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-emerald-500 h-2 rounded-full" style="width: 25%"></div>
+                </div>
+              </div>
+
+              <!-- Overdue (31-60d) -->
+              <div onclick="filterLedgerByAging('Overdue (31-60 Days)')" class="group cursor-pointer hover:bg-slate-50 p-2 rounded-lg transition-colors border border-transparent hover:border-slate-200">
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="font-medium text-slate-700 group-hover:text-brand-red flex items-center">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block mr-2"></span>
+                    Overdue (31-60 Days)
+                  </span>
+                  <span id="aging-val-3160" class="font-bold text-slate-900">₹ 3,85,000</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-amber-500 h-2 rounded-full" style="width: 18%"></div>
+                </div>
+              </div>
+
+              <!-- Critical (61-90d) -->
+              <div onclick="filterLedgerByAging('Critical (61-90 Days)')" class="group cursor-pointer hover:bg-slate-50 p-2 rounded-lg transition-colors border border-transparent hover:border-slate-200">
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="font-medium text-slate-700 group-hover:text-brand-red flex items-center">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block mr-2"></span>
+                    Critical (61-90 Days · Disputes)
+                  </span>
+                  <span id="aging-val-6190" class="font-bold text-slate-900">₹ 3,50,000</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-rose-500 h-2 rounded-full" style="width: 16%"></div>
+                </div>
+              </div>
+
+              <!-- High Risk (>90d) -->
+              <div onclick="filterLedgerByAging('High Risk (90+ Days)')" class="group cursor-pointer hover:bg-slate-50 p-2 rounded-lg transition-colors border border-transparent hover:border-slate-200">
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="font-medium text-slate-700 group-hover:text-brand-red flex items-center">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block mr-2"></span>
+                    High Risk (90+ Days · Escalated)
+                  </span>
+                  <span id="aging-val-90plus" class="font-bold text-slate-900">₹ 8,80,000</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-purple-600 h-2 rounded-full" style="width: 41%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <span>Statutory Withholding:</span>
+            <span class="px-2 py-0.5 font-bold bg-emerald-50 text-emerald-700 rounded border border-emerald-200">Section 194C / 194J Active</span>
+          </div>
+        </div>
+
+        <!-- Column 2: Sales Owner Portfolio Status (Active AM Isolation) -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="user-check" class="w-4 h-4 text-slate-700"></i>
+              <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Sales Owner Portfolio Status</h3>
+            </div>
+            <span class="text-xs text-slate-400 font-mono">4 Terr. Managers</span>
+          </div>
+
+          <div id="sales-portfolio-list" class="space-y-3 mt-4">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Column 3: Dispute & Remittance Categorization (Donut Chart) -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="disc" class="w-4 h-4 text-slate-700"></i>
+                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Dispute & Remittance Categorization</h3>
+              </div>
+              <span class="text-xs text-slate-400 font-mono">Inbound Audit</span>
+            </div>
+
+            <!-- Donut SVG & Breakdown Legend -->
+            <div class="flex items-center space-x-6 mt-4">
+              <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="38" stroke="#F1F5F9" stroke-width="12" fill="none"/>
+                  <circle cx="50" cy="50" r="38" stroke="#3B82F6" stroke-width="12" stroke-dasharray="131 238" stroke-dashoffset="0" fill="none"/>
+                  <circle cx="50" cy="50" r="38" stroke="#10B981" stroke-width="12" stroke-dasharray="54 238" stroke-dashoffset="-131" fill="none"/>
+                  <circle cx="50" cy="50" r="38" stroke="#F59E0B" stroke-width="12" stroke-dasharray="16 238" stroke-dashoffset="-185" fill="none"/>
+                  <circle cx="50" cy="50" r="38" stroke="#EF4444" stroke-width="12" stroke-dasharray="18 238" stroke-dashoffset="-201" fill="none"/>
+                  <circle cx="50" cy="50" r="38" stroke="#8B5CF6" stroke-width="12" stroke-dasharray="13 238" stroke-dashoffset="-219" fill="none"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <span class="text-lg font-black text-slate-900">333</span>
+                  <span class="text-[10px] text-slate-500 font-medium">Invoices</span>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="space-y-1.5 text-xs flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center text-slate-600"><span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span> Finance Follow-up</span>
+                  <span class="font-bold text-slate-900">184 (55%)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center text-slate-600"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span> Invoice Not Due</span>
+                  <span class="font-bold text-slate-900">53 (23%)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center text-slate-600"><span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span> Escalated</span>
+                  <span class="font-bold text-slate-900">23 (7%)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center text-slate-600"><span class="w-2 h-2 rounded-full bg-red-500 mr-2"></span> Invoice/PO Dispute</span>
+                  <span class="font-bold text-slate-900">25 (8%)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center text-slate-600"><span class="w-2 h-2 rounded-full bg-purple-500 mr-2"></span> Payment In Transit</span>
+                  <span class="font-bold text-slate-900">41 (6%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-500">False-Chase Dunning Interlock:</span>
+            <span class="font-bold text-emerald-600 flex items-center">
+              <i data-lucide="shield-alert" class="w-3.5 h-3.5 mr-1"></i> Active Guard
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: AR MASTER LEDGER                   -->
+    <!-- ========================================== -->
+    <div id="tab-ledger" class="hidden space-y-4" style="display: none;">
+      <!-- Ledger Control Toolbar -->
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center space-x-3 flex-1 flex-wrap gap-y-2">
+          <div class="relative flex-1 min-w-[260px] max-w-md">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+            <input type="text" id="ledger-search-input" oninput="filterLedgerTable()" placeholder="Search customer, NetSuite ID, or invoice number..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-red">
+          </div>
+          <select id="ledger-aging-filter" onchange="filterLedgerTable()" class="text-xs font-semibold bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-red cursor-pointer">
+            <option value="ALL">All Aging Brackets</option>
+            <option value="Current (1-30 Days)">Current (1-30 Days)</option>
+            <option value="Overdue (31-60 Days)">Overdue (31-60 Days)</option>
+            <option value="Critical (61-90 Days)">Critical (61-90 Days)</option>
+            <option value="High Risk (90+ Days)">High Risk (90+ Days)</option>
+          </select>
+          <select id="ledger-status-filter" onchange="filterLedgerTable()" class="text-xs font-semibold bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-red cursor-pointer">
+            <option value="ALL">All Reconciliation Statuses</option>
+            <option value="Matched">Bank Remittance Matched</option>
+            <option value="TDS Identified">TDS Identified (Sec 194C)</option>
+            <option value="Disputed">Dispute Under Review</option>
+            <option value="Current">Current / On Terms</option>
+            <option value="Settled">Settled in NetSuite</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="exportNetSuiteCSV()" class="flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors cursor-pointer">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Export NetSuite Apply CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- High-Density Enterprise Table -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-extrabold text-[11px]">
+              <tr>
+                <th class="px-4 py-3">Customer Account</th>
+                <th class="px-4 py-3">NetSuite ID</th>
+                <th class="px-4 py-3">Assigned AM</th>
+                <th class="px-4 py-3">Invoice Number</th>
+                <th class="px-4 py-3">Due Date</th>
+                <th class="px-4 py-3">Aging Bracket</th>
+                <th class="px-4 py-3 text-right">Invoice Value</th>
+                <th class="px-4 py-3">Reconciliation Intent</th>
+                <th class="px-4 py-3 text-center">Customer 360</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-table-body" class="divide-y divide-slate-200">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Row Count -->
+        <div class="px-4 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+          <span id="ledger-pagination-info">Showing all active records matching filters</span>
+          <span class="font-mono">Total NetSuite Staged Exposure: <strong id="ledger-total-exposure" class="text-slate-900">₹ 21,45,000</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: CUSTOMER COLLECTIONS 360 WAR ROOM   -->
+    <!-- ========================================== -->
+    <div id="tab-warroom" class="hidden space-y-6" style="display: none;">
+
+      <!-- Customer Selector Header -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <div class="p-2 bg-red-50 text-brand-red rounded-lg">
+              <i data-lucide="briefcase" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Customer Collections War Room (Customer 360)</h2>
+              <p class="text-xs text-slate-500">Centralized operational dossier: invoices, automated remittance matching, email audit trail, and simulated settlement.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <label class="text-xs font-bold text-slate-700">Select Customer:</label>
+          <select id="warroom-customer-select" onchange="renderWarRoomCustomer(this.value)" class="text-xs font-extrabold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-red min-w-[280px] cursor-pointer">
+            <!-- Rendered dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Customer Snapshot Header Bar -->
+      <div id="customer-snapshot-bar" class="grid grid-cols-2 md:grid-cols-6 gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-card text-xs">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Two-Column Operational Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Invoices & Remittance Matcher (7 Cols) -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- Outstanding Invoices Card -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="receipt" class="w-4 h-4 text-brand-red"></i>
+                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Outstanding Invoices Ledger</h3>
+              </div>
+              <span id="warroom-invoice-count" class="text-xs text-slate-500 font-mono">2 Invoices Listed</span>
+            </div>
+
+            <div class="overflow-x-auto mt-3">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider font-extrabold text-[11px]">
+                  <tr>
+                    <th class="px-3 py-2">Invoice</th>
+                    <th class="px-3 py-2">Due Date</th>
+                    <th class="px-3 py-2">Overdue Days</th>
+                    <th class="px-3 py-2 text-right">Amount</th>
+                    <th class="px-3 py-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="warroom-invoices-tbody" class="divide-y divide-slate-100">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Identified Bank Remittance & Matching Engine Card -->
+          <div id="warroom-remittance-card" class="bg-white p-5 rounded-xl border border-slate-200 shadow-card">
+            <!-- Rendered dynamically with 1-click Approve & Settle CTA -->
+          </div>
+
+        </div>
+
+        <!-- Right Column: AI Briefing & Shared Mailbox Thread (5 Cols) -->
+        <div class="lg:col-span-5 space-y-6">
+
+          <!-- Deterministic AI Account Briefing -->
+          <div class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800 shadow-card">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                <h3 class="text-xs font-extrabold text-amber-400 uppercase tracking-wider">Executive Account Briefing</h3>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">Status: Grounded</span>
+            </div>
+
+            <div id="warroom-ai-summary" class="mt-3 text-xs leading-relaxed text-slate-200">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
+              <button onclick="notifyAccountManager()" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-bold bg-brand-red hover:bg-brand-redHover text-white rounded-lg transition-colors cursor-pointer">
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                <span id="btn-notify-am-text">Notify Account Manager</span>
+              </button>
+              <button onclick="downloadCustomerStatement()" class="flex items-center space-x-1 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer">
+                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                <span>Download Statement</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Captured Email Remittance & Dispute Feed -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="mail" class="w-4 h-4 text-indigo-600"></i>
+                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Shared Mailbox Feed (ar.india@noventiq.com)</h3>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded font-bold border border-indigo-100">Graph API Active</span>
+            </div>
+
+            <div id="warroom-email-feed" class="mt-3 space-y-3">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: DATA INGESTION & STAGING PORTAL     -->
+    <!-- ========================================== -->
+    <div id="tab-ingestion" class="hidden space-y-6" style="display: none;">
+
+      <!-- Ingestion Header -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+              <i data-lucide="folder-sync" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Data Ingestion & Staging Gateway (File-In / File-Out)</h2>
+              <p class="text-xs text-slate-500">Zero backend integration required. Import standard NetSuite CSVs, corporate bank feeds, and mailbox advice to run AI matching.</p>
+            </div>
+          </div>
+        </div>
+        <button onclick="triggerBatchReconciliation()" class="flex items-center space-x-2 px-4 py-2 text-xs font-extrabold bg-brand-red hover:bg-brand-redHover text-white rounded-lg shadow-xs transition-all hover:scale-[1.02] cursor-pointer">
+          <i data-lucide="play" class="w-4 h-4"></i>
+          <span>Run Batch AI Reconciliation Matcher</span>
+        </button>
+      </div>
+
+      <!-- 3 Ingestion Channels -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Channel 1: NetSuite AR Aging -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4 text-blue-600"></i>
+              <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">1. NetSuite AR Aging Export</h3>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Standard CSV export containing customer balance, invoice numbers, due dates, and assigned sales owner.</p>
+
+            <div onclick="simulateFileUpload('NetSuite AR Aging CSV')" class="mt-4 p-4 border-2 border-dashed border-slate-300 rounded-lg text-center bg-slate-50 hover:bg-slate-100 cursor-pointer transition-colors">
+              <i data-lucide="upload-cloud" class="w-6 h-6 text-slate-400 mx-auto mb-1"></i>
+              <span class="text-xs font-bold text-slate-700 block">Drop NetSuite AR CSV here</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">or click to browse local files</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <span>Staged Feed: <strong>ar_aging_sample.csv</strong></span>
+            <span class="text-emerald-600 font-bold flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 mr-1"></i> 8 Records</span>
+          </div>
+        </div>
+
+        <!-- Channel 2: Corporate Bank Statements -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
+              <i data-lucide="credit-card" class="w-4 h-4 text-amber-600"></i>
+              <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">2. Corporate Bank Statement</h3>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Daily MT940 / CSV transaction log detailing incoming NEFT, RTGS, and wire deposits from HDFC / ICICI bank.</p>
+
+            <div onclick="simulateFileUpload('Corporate Bank Statement CSV')" class="mt-4 p-4 border-2 border-dashed border-slate-300 rounded-lg text-center bg-slate-50 hover:bg-slate-100 cursor-pointer transition-colors">
+              <i data-lucide="upload-cloud" class="w-6 h-6 text-slate-400 mx-auto mb-1"></i>
+              <span class="text-xs font-bold text-slate-700 block">Drop Bank Credits CSV here</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">or click to browse local files</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <span>Staged Feed: <strong>bank_credits_sample.csv</strong></span>
+            <span class="text-emerald-600 font-bold flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 mr-1"></i> 4 Deposits</span>
+          </div>
+        </div>
+
+        <!-- Channel 3: Shared Mailbox Remittance Advice -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
+              <i data-lucide="mail-check" class="w-4 h-4 text-indigo-600"></i>
+              <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">3. Shared Mailbox Ingestion</h3>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Automated Microsoft Graph shared mailbox reader capturing remittance PDFs, payment confirmations, and billing disputes.</p>
+
+            <div class="mt-4 p-4 border-2 border-dashed border-indigo-200 rounded-lg text-center bg-indigo-50/50 hover:bg-indigo-50 cursor-pointer transition-colors">
+              <i data-lucide="refresh-cw" class="w-6 h-6 text-indigo-500 mx-auto mb-1"></i>
+              <span class="text-xs font-bold text-indigo-900 block">Auto-Syncing Graph Mailbox</span>
+              <span class="text-[10px] text-indigo-600 block mt-0.5">ar.india@noventiq.com (Active)</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <span>Captured Advice: <strong>3 Messages Processed</strong></span>
+            <span class="text-emerald-600 font-bold flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 mr-1"></i> 100% Parsed</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Ingested Feeds Audit Ledger -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-card overflow-hidden">
+        <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+          <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Staging Feeds Reconciler Audit Log</h3>
+          <span class="text-xs text-slate-500 font-mono">Deterministic Match Engine Enforced</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider font-extrabold text-[11px]">
+              <tr>
+                <th class="px-4 py-3">Feed Source</th>
+                <th class="px-4 py-3">Reference / File</th>
+                <th class="px-4 py-3">Timestamp</th>
+                <th class="px-4 py-3">Matched Entity</th>
+                <th class="px-4 py-3">Parsed Value</th>
+                <th class="px-4 py-3">Matching Rule Confidence</th>
+                <th class="px-4 py-3">Execution State</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="px-4 py-3 font-bold text-blue-700 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5"></i> Bank Credit</td>
+                <td class="px-4 py-3 font-mono text-slate-700">TXN-90241</td>
+                <td class="px-4 py-3 text-slate-500">19 Nov 2026, 11:30 IST</td>
+                <td class="px-4 py-3 font-bold text-slate-900">Kaveri Agro Industries Ltd</td>
+                <td class="px-4 py-3 font-black text-slate-900">₹ 2,00,000</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800">98.5% Exact Multi-Split</span></td>
+                <td class="px-4 py-3 text-emerald-600 font-bold">Ready for Approval</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-bold text-blue-700 flex items-center"><i data-lucide="credit-card" class="w-3.5 h-3.5 mr-1.5"></i> Bank Credit</td>
+                <td class="px-4 py-3 font-mono text-slate-700">TXN-89412</td>
+                <td class="px-4 py-3 text-slate-500">19 Nov 2026, 14:15 IST</td>
+                <td class="px-4 py-3 font-bold text-slate-900">Tata Steel BSL Limited</td>
+                <td class="px-4 py-3 font-black text-slate-900">₹ 98,000</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-100 text-amber-800">95.0% Statutory TDS (2%)</span></td>
+                <td class="px-4 py-3 text-emerald-600 font-bold">Ready for Approval</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-bold text-indigo-700 flex items-center"><i data-lucide="mail" class="w-3.5 h-3.5 mr-1.5"></i> Mailbox EML</td>
+                <td class="px-4 py-3 font-mono text-slate-700">MSG-APEX-092</td>
+                <td class="px-4 py-3 text-slate-500">18 Nov 2026, 16:45 IST</td>
+                <td class="px-4 py-3 font-bold text-slate-900">Apex Pharma Solutions</td>
+                <td class="px-4 py-3 font-black text-slate-900">₹ 3,50,000</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-100 text-rose-800">100% Billing Dispute</span></td>
+                <td class="px-4 py-3 text-amber-600 font-bold">Collections Chase Paused</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DRILLDOWN FOR HISTORICAL AGING      -->
+  <!-- ========================================== -->
+  <div id="drilldown-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 items-center justify-center p-4" style="display: none;">
+    <div class="bg-white rounded-xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div>
+          <h3 id="drilldown-modal-title" class="text-sm font-extrabold text-slate-900">Month Overdue Breakdown</h3>
+          <p id="drilldown-modal-subtitle" class="text-xs text-slate-500">Detailed accounts contributing to this overdue bucket</p>
+        </div>
+        <button onclick="closeDrilldownModal()" class="text-slate-400 hover:text-slate-700 transition-colors cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-6 max-h-[60vh] overflow-y-auto custom-scroll">
+        <div id="drilldown-modal-content" class="space-y-3">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
+        <button onclick="closeDrilldownModal()" class="px-4 py-1.5 text-xs font-bold bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg transition-colors cursor-pointer">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FLOATING ENTERPRISE FINANCE COPILOT WIDGET -->
+  <!-- ========================================== -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <!-- Collapsed Floating Button -->
+    <button id="copilot-toggle-btn" onclick="toggleCopilot()" class="flex items-center space-x-2 bg-brand-red hover:bg-brand-redHover text-white px-4 py-2.5 rounded-full shadow-floating transition-transform hover:scale-105 cursor-pointer">
+      <i data-lucide="message-square" class="w-4 h-4"></i>
+      <span class="text-xs font-extrabold tracking-wide">Ask Finance Copilot</span>
+    </button>
+
+    <!-- Expanded Chat Window -->
+    <div id="copilot-panel" class="absolute bottom-12 right-0 w-96 sm:w-[420px] bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden flex-col h-[520px]" style="display: none;">
+      <!-- Header -->
+      <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-7 h-7 rounded-full bg-brand-red flex items-center justify-center">
+            <i data-lucide="bot" class="w-4 h-4 text-white"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-extrabold">Noventiq Finance Copilot</h4>
+            <span class="text-[10px] text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span> Grounded in AR & Bank Ledger</span>
+          </div>
+        </div>
+        <button onclick="toggleCopilot()" class="text-slate-400 hover:text-white cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="bg-slate-50 px-3 py-2 border-b border-slate-200 flex space-x-1.5 overflow-x-auto text-[11px] whitespace-nowrap custom-scroll">
+        <button onclick="askCopilot('Summarize Kaveri Agro remittance status')" class="px-2.5 py-1 bg-white border border-slate-200 rounded-full text-slate-700 hover:border-brand-red hover:text-brand-red font-medium transition-colors cursor-pointer">Kaveri Remittance</button>
+        <button onclick="askCopilot('Which accounts have active billing disputes?')" class="px-2.5 py-1 bg-white border border-slate-200 rounded-full text-slate-700 hover:border-brand-red hover:text-brand-red font-medium transition-colors cursor-pointer">Active Disputes</button>
+        <button onclick="askCopilot('Explain Tata Steel 2% TDS deduction')" class="px-2.5 py-1 bg-white border border-slate-200 rounded-full text-slate-700 hover:border-brand-red hover:text-brand-red font-medium transition-colors cursor-pointer">Tata Steel TDS</button>
+        <button onclick="askCopilot('List accounts overdue >90 days')" class="px-2.5 py-1 bg-white border border-slate-200 rounded-full text-slate-700 hover:border-brand-red hover:text-brand-red font-medium transition-colors cursor-pointer">>90d Overdue</button>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="copilot-messages" class="flex-1 p-4 overflow-y-auto space-y-3 custom-scroll text-xs">
+        <div class="flex items-start space-x-2">
+          <div class="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0 text-slate-600">
+            <i data-lucide="bot" class="w-3.5 h-3.5 text-brand-red"></i>
+          </div>
+          <div class="bg-slate-100 text-slate-800 p-3 rounded-xl rounded-tl-none max-w-[85%] leading-relaxed font-medium">
+            Hello! I am your <strong>Noventiq Cash Recovery Copilot</strong>. I have indexed your live AR aging ledger, bank deposit receipts, and mailbox remittance trails. Ask me any financial question or click one of the quick chips above.
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Form -->
+      <div class="p-3 border-t border-slate-200 bg-white">
+        <form onsubmit="handleCopilotSubmit(event)" class="flex items-center space-x-2">
+          <input type="text" id="copilot-input" placeholder="Ask about customer balances, TDS, disputes..." class="flex-1 text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-red">
+          <button type="submit" class="p-2 bg-brand-red hover:bg-brand-redHover text-white rounded-lg transition-colors cursor-pointer">
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC SCRIPT -->
+  <script>
+    function safeCreateIcons() {
+      if (typeof lucide !== 'undefined' && lucide && lucide.createIcons) {
+        try {
+          lucide.createIcons();
+        } catch (e) {
+          console.warn("Lucide render error:", e);
+        }
+      }
+    }
+
+    // GLOBAL STATE
+    let currentCurrency = 'INR';
+    const FX_RATE = 83.50; // 1 USD = 83.50 INR
+    let activeRole = 'ALL';
+
+    // 12-MONTH HISTORICAL OVERDUE MOCK DATA
+    const historicalData = [
+      { month: 'Nov 25', d91_180: 3200000, d181_365: 2400000, d365plus: 1080000, total: 6680000, usdTotal: 800000 },
+      { month: 'Dec 25', d91_180: 3050000, d181_365: 2300000, d365plus: 910000, total: 6260000, usdTotal: 750000 },
+      { month: 'Jan 26', d91_180: 2900000, d181_365: 2200000, d365plus: 1410000, total: 6510000, usdTotal: 780000 },
+      { month: 'Feb 26', d91_180: 2800000, d181_365: 2100000, d365plus: 1030000, total: 5930000, usdTotal: 710000 },
+      { month: 'Mar 26', d91_180: 2700000, d181_365: 2050000, d365plus: 1010000, total: 5760000, usdTotal: 690000 },
+      { month: 'Apr 26', d91_180: 1600000, d181_365: 1200000, d365plus: 540000, total: 3340000, usdTotal: 400000 },
+      { month: 'May 26', d91_180: 1700000, d181_365: 1300000, d365plus: 510000, total: 3510000, usdTotal: 420000 },
+      { month: 'Jun 26', d91_180: 3100000, d181_365: 2250000, d365plus: 960000, total: 6310000, usdTotal: 756000 },
+      { month: 'Jul 26', d91_180: 2650000, d181_365: 2000000, d365plus: 890000, total: 5540000, usdTotal: 664000 },
+      { month: 'Aug 26', d91_180: 2500000, d181_365: 1900000, d365plus: 880000, total: 5280000, usdTotal: 632000 },
+      { month: 'Sep 26', d91_180: 2100000, d181_365: 1600000, d365plus: 640000, total: 4340000, usdTotal: 519000 },
+      { month: 'Nov 26', d91_180: 1650000, d181_365: 1250000, d365plus: 450000, total: 3350000, usdTotal: 401500 }
+    ];
+
+    // 12-MONTH MoM TOTAL AR vs. ACTUAL COLLECTION DATA (FOR VISUAL DUAL-BAR CHART)
+    const momData = [
+      { month: 'Nov 25', ar: 2450000, coll: 1620000, rate: 66.1 },
+      { month: 'Dec 25', ar: 2600000, coll: 1800000, rate: 69.2 },
+      { month: 'Jan 26', ar: 2520000, coll: 1710000, rate: 67.9 },
+      { month: 'Feb 26', ar: 2300000, coll: 1580000, rate: 68.7 },
+      { month: 'Mar 26', ar: 2750000, coll: 1950000, rate: 70.9 },
+      { month: 'Apr 26', ar: 2200000, coll: 1500000, rate: 68.2 },
+      { month: 'May 26', ar: 2150000, coll: 1380000, rate: 64.2 },
+      { month: 'Jun 26', ar: 2850000, coll: 2050000, rate: 71.9 },
+      { month: 'Jul 26', ar: 2620000, coll: 1880000, rate: 71.8 },
+      { month: 'Aug 26', ar: 2380000, coll: 1760000, rate: 73.9 },
+      { month: 'Sep 26', ar: 2250000, coll: 1750000, rate: 77.8 },
+      { month: 'Nov 26', ar: 2145000, coll: 1780000, rate: 83.0 }
+    ];
+
+    // MASTER INVOICES DATASET
+    let masterInvoices = [
+      {
+        customer: "Kaveri Agro Industries Ltd",
+        netsuiteId: "CUST-IN-0412",
+        am: "Rajesh Verma",
+        invoiceNo: "INV-2026-1042",
+        dueDate: "2026-10-15",
+        overdueDays: 36,
+        agingCategory: "Overdue (31-60 Days)",
+        amount: 120000,
+        status: "Matched",
+        statusText: "Bank Remittance Ready",
+        creditLimit: 1500000,
+        terms: "Net 30 Days",
+        risk: "Medium Risk",
+        settled: false
+      },
+      {
+        customer: "Kaveri Agro Industries Ltd",
+        netsuiteId: "CUST-IN-0412",
+        am: "Rajesh Verma",
+        invoiceNo: "INV-2026-1088",
+        dueDate: "2026-11-02",
+        overdueDays: 18,
+        agingCategory: "Current (1-30 Days)",
+        amount: 80000,
+        status: "Matched",
+        statusText: "Bank Remittance Ready",
+        creditLimit: 1500000,
+        terms: "Net 30 Days",
+        risk: "Medium Risk",
+        settled: false
+      },
+      {
+        customer: "Tata Steel BSL Limited",
+        netsuiteId: "CUST-IN-0189",
+        am: "Ananya Roy",
+        invoiceNo: "INV-2026-0914",
+        dueDate: "2026-10-08",
+        overdueDays: 43,
+        agingCategory: "Overdue (31-60 Days)",
+        amount: 100000,
+        status: "TDS Identified",
+        statusText: "TDS 2% Deduction Identified",
+        creditLimit: 5000000,
+        terms: "Net 45 Days",
+        risk: "Low Risk",
+        settled: false
+      },
+      {
+        customer: "Apex Pharma Solutions",
+        netsuiteId: "CUST-IN-0823",
+        am: "Vikram Mehta",
+        invoiceNo: "INV-2026-0811",
+        dueDate: "2026-09-07",
+        overdueDays: 74,
+        agingCategory: "Critical (61-90 Days)",
+        amount: 350000,
+        status: "Disputed",
+        statusText: "Billing Dispute Logged",
+        creditLimit: 2500000,
+        terms: "Net 30 Days",
+        risk: "High Risk",
+        settled: false
+      },
+      {
+        customer: "Infosys BPO Services",
+        netsuiteId: "CUST-IN-0994",
+        am: "Amitabh Sen",
+        invoiceNo: "INV-2026-0702",
+        dueDate: "2026-07-28",
+        overdueDays: 115,
+        agingCategory: "High Risk (90+ Days)",
+        amount: 420000,
+        status: "Critical",
+        statusText: "90+ Days Escalation",
+        creditLimit: 3000000,
+        terms: "Net 30 Days",
+        risk: "High Risk",
+        settled: false
+      },
+      {
+        customer: "Bharat Heavy Electricals",
+        netsuiteId: "CUST-IN-0331",
+        am: "Ananya Roy",
+        invoiceNo: "INV-2026-0689",
+        dueDate: "2026-08-14",
+        overdueDays: 98,
+        agingCategory: "High Risk (90+ Days)",
+        amount: 450000,
+        status: "Disputed",
+        statusText: "Retention Dispute 10%",
+        creditLimit: 4000000,
+        terms: "Net 60 Days",
+        risk: "Medium Risk",
+        settled: false
+      },
+      {
+        customer: "TechMahindra Enterprise",
+        netsuiteId: "CUST-IN-0552",
+        am: "Rajesh Verma",
+        invoiceNo: "INV-2026-1104",
+        dueDate: "2026-10-26",
+        overdueDays: 25,
+        agingCategory: "Current (1-30 Days)",
+        amount: 240000,
+        status: "Current",
+        statusText: "Payment Promised 24 Nov",
+        creditLimit: 2000000,
+        terms: "Net 30 Days",
+        risk: "Low Risk",
+        settled: false
+      },
+      {
+        customer: "Larsen & Toubro Infotech",
+        netsuiteId: "CUST-IN-0715",
+        am: "Vikram Mehta",
+        invoiceNo: "INV-2026-0995",
+        dueDate: "2026-09-26",
+        overdueDays: 55,
+        agingCategory: "Overdue (31-60 Days)",
+        amount: 185000,
+        status: "Follow-up",
+        statusText: "Finance Follow-up",
+        creditLimit: 3500000,
+        terms: "Net 45 Days",
+        risk: "Medium Risk",
+        settled: false
+      },
+      {
+        customer: "HCL Technologies",
+        netsuiteId: "CUST-IN-1002",
+        am: "Amitabh Sen",
+        invoiceNo: "INV-2026-1150",
+        dueDate: "2026-11-08",
+        overdueDays: 12,
+        agingCategory: "Current (1-30 Days)",
+        amount: 200000,
+        status: "Current",
+        statusText: "Current / On Terms",
+        creditLimit: 4000000,
+        terms: "Net 30 Days",
+        risk: "Low Risk",
+        settled: false
+      }
+    ];
+
+    // CUSTOMER DOSSIERS FOR 360 WAR ROOM
+    const customerDossiers = {
+      "Kaveri Agro Industries Ltd": {
+        netsuiteId: "CUST-IN-0412",
+        am: "Rajesh Verma",
+        creditLimit: 1500000,
+        terms: "Net 30 Days",
+        risk: "Medium Risk",
+        totalOverdue: 200000,
+        remittance: {
+          txRef: "TXN-90241 · HDFC Corporate Remittance",
+          bankNarrative: "NEFT-CMS-KAVERI AGRO INDS-HDFC0000012-INV1042-88",
+          amount: 200000,
+          confidence: "98.5% Match Confidence",
+          matchRule: "Bank credit of ₹2,00,000 matches exactly 2 open invoices: INV-2026-1042 (₹1,20,000) and INV-2026-1088 (₹80,000). Bank alias KAVERI AGRO INDS mapped to CUST-IN-0412. Remittance advice confirmed in mailbox.",
+          canSettle: true
+        },
+        aiSummary: "Payment of <strong>₹2,00,000</strong> was executed via NEFT by Kaveri Agro covering both October and November software licensing fees. Remittance email confirms full settlement. <strong>Recommending immediate cash application to clear pending collections chase.</strong>",
+        emails: [
+          {
+            from: "procurement@kaveriagro.com",
+            subject: "Payment Remittance Advice - Kaveri Agro Industries - Invoices 1042 & 1088",
+            time: "19 Nov, 10:42 IST",
+            body: "Please be advised that we have initiated an RTGS/NEFT transfer of INR 200,000.00 today from our HDFC bank account towards full settlement of your invoices:<br>1. INV-2026-1042 (Amount: INR 120,000)<br>2. INV-2026-1088 (Amount: INR 80,000)<br><br>Transaction reference: <strong>NEFT-CMS-KAVERI AGRO INDS-HDFC0000012-INV1042-88</strong>.<br>Kindly confirm receipt and allocate the payment accordingly so that our account statement is updated."
+          }
+        ]
+      },
+      "Tata Steel BSL Limited": {
+        netsuiteId: "CUST-IN-0189",
+        am: "Ananya Roy",
+        creditLimit: 5000000,
+        terms: "Net 45 Days",
+        risk: "Low Risk",
+        totalOverdue: 100000,
+        remittance: {
+          txRef: "TXN-89412 · ICICI Corporate Bank Credit",
+          bankNarrative: "RTGS-TATASTEEL-ICIC0000021-INV0914-NET",
+          amount: 98000,
+          confidence: "95.0% Statutory TDS Match",
+          matchRule: "Gross invoice is ₹1,00,000. Bank deposit is ₹98,000. AI detected exact 2.0% Section 194C TDS withholding (₹2,000). Customer finance email confirms Form 16A TDS certificate will follow.",
+          canSettle: true
+        },
+        aiSummary: "Tata Steel BSL settled INV-2026-0914 (Gross ₹1,00,000) net of <strong>2% TDS (₹2,000)</strong> under Indian IT Act Section 194C. Deposit of ₹98,000 is ready for two-line settlement: ₹98,000 Cash + ₹2,000 TDS Withholding.",
+        emails: [
+          {
+            from: "accounts.payable@tatasteel.com",
+            subject: "Remittance Advice - INV-2026-0914 with 2% TDS deduction",
+            time: "19 Nov, 14:15 IST",
+            body: "We have released payment for Invoice INV-2026-0914. Net payment of INR 98,000 has been credited via RTGS after statutory deduction of 2% TDS under Section 194C (INR 2,000). Quarterly Form 16A will be provided in January 2027."
+          }
+        ]
+      },
+      "Apex Pharma Solutions": {
+        netsuiteId: "CUST-IN-0823",
+        am: "Vikram Mehta",
+        creditLimit: 2500000,
+        terms: "Net 30 Days",
+        risk: "High Risk",
+        totalOverdue: 350000,
+        remittance: {
+          txRef: "NO INCOMING BANK CREDIT LOCATED",
+          bankNarrative: "N/A - Customer holding payment pending dispute resolution",
+          amount: 0,
+          confidence: "Dispute Flag Active",
+          matchRule: "Customer CFO emailed stating invoice INV-2026-0811 duplicates PO line item from August billing. Automatic payment chasers have been paused to protect client relationship.",
+          canSettle: false
+        },
+        aiSummary: "Billing dispute logged on 18 Nov. Customer claims duplicate billing of <strong>₹3,50,000</strong> on PO-9912. Automated chase is halted. Escalated to Vikram Mehta (Sales AM) for credit memo review.",
+        emails: [
+          {
+            from: "cfo@apexpharma.in",
+            subject: "DISPUTE: Duplicate Billing on Invoice INV-2026-0811",
+            time: "18 Nov, 16:30 IST",
+            body: "Please stop sending automated collection chasers for INV-2026-0811. Our audits indicate this ₹3,50,000 charge was already billed and cleared under INV-2026-0710 in August. Please issue a credit note immediately or arrange an AM clarification call."
+          }
+        ]
+      },
+      "Infosys BPO Services": {
+        netsuiteId: "CUST-IN-0994",
+        am: "Amitabh Sen",
+        creditLimit: 3000000,
+        terms: "Net 30 Days",
+        risk: "High Risk",
+        totalOverdue: 420000,
+        remittance: {
+          txRef: "NO UNALLOCATED DEPOSIT FOUND",
+          bankNarrative: "Awaiting legal escalation conference",
+          amount: 0,
+          confidence: "High Risk Tier (>90d)",
+          matchRule: "Invoice is 115 days overdue. Legal notice sent 02 Nov. Formal response from corporate counsel pending.",
+          canSettle: false
+        },
+        aiSummary: "Critical account >90 days overdue. Amount outstanding: <strong>₹4,20,000</strong>. Credit hold placed in NetSuite. Legal arbitration notice issued.",
+        emails: [
+          {
+            from: "legal@infosysbpo.com",
+            subject: "RE: Notice of Overdue Account - INV-2026-0702",
+            time: "10 Nov, 11:20 IST",
+            body: "We acknowledge receipt of your notice. The delay is due to internal vendor reconciliation regarding delivered milestones. We are scheduling a settlement meeting next week."
+          }
+        ]
+      }
+    };
+
+    // FORMATTERS
+    function formatMoney(amountINR) {
+      if (currentCurrency === 'USD') {
+        const usdVal = amountINR / FX_RATE;
+        return '$ ' + Math.round(usdVal).toLocaleString('en-US');
+      } else {
+        return '₹ ' + Math.round(amountINR).toLocaleString('en-IN');
+      }
+    }
+
+    function formatShortMoney(amountINR, usdTotal) {
+      if (currentCurrency === 'USD') {
+        return '$ ' + (usdTotal / 1000).toFixed(1) + 'k';
+      } else {
+        const lakh = amountINR / 100000;
+        return '₹ ' + lakh.toFixed(1) + 'L';
+      }
+    }
+
+    // CURRENCY SWITCHER
+    function setCurrency(curr) {
+      currentCurrency = curr;
+      const inrBtn = document.getElementById('curr-inr-btn');
+      const usdBtn = document.getElementById('curr-usd-btn');
+
+      if (curr === 'INR') {
+        inrBtn.className = "px-2.5 py-1 text-xs font-bold rounded-md bg-white text-slate-900 shadow-xs transition-all cursor-pointer";
+        usdBtn.className = "px-2.5 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900 transition-all cursor-pointer";
+      } else {
+        usdBtn.className = "px-2.5 py-1 text-xs font-bold rounded-md bg-white text-slate-900 shadow-xs transition-all cursor-pointer";
+        inrBtn.className = "px-2.5 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900 transition-all cursor-pointer";
+      }
+
+      updateAllViews();
+    }
+
+    // ROLE SWITCHER (RBAC)
+    function handleRoleChange(role) {
+      activeRole = role;
+      const banner = document.getElementById('am-isolation-banner');
+      const bannerName = document.getElementById('am-banner-name');
+
+      if (role === 'ALL') {
+        banner.classList.add('hidden');
+      } else {
+        banner.classList.remove('hidden');
+        bannerName.innerText = role;
+      }
+
+      updateAllViews();
+    }
+
+    function resetRoleToAll() {
+      document.getElementById('rbac-role-select').value = 'ALL';
+      handleRoleChange('ALL');
+    }
+
+    // TAB SWITCHER WITH EXPLICIT STYLE.DISPLAY
+    function switchTab(tabId) {
+      const tabs = ['tab-dashboard', 'tab-ledger', 'tab-warroom', 'tab-ingestion'];
+      tabs.forEach(t => {
+        const el = document.getElementById(t);
+        const navEl = document.getElementById('nav-' + t);
+        if (!el || !navEl) return;
+
+        if (t === tabId) {
+          el.style.display = 'block';
+          el.classList.remove('hidden');
+          navEl.className = "py-3 px-1 border-b-2 border-brand-red text-xs font-extrabold text-brand-red flex items-center space-x-2 transition-colors cursor-pointer";
+        } else {
+          el.style.display = 'none';
+          el.classList.add('hidden');
+          navEl.className = "py-3 px-1 border-b-2 border-transparent text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center space-x-2 transition-colors cursor-pointer";
+        }
+      });
+      safeCreateIcons();
+    }
+
+    // SUB-VIEW SWITCHER WITHIN DASHBOARD
+    function switchExecutiveSubView(view) {
+      const btnAging = document.getElementById('btn-subview-aging');
+      const btnDso = document.getElementById('btn-subview-dso');
+      const agingContainer = document.getElementById('subview-aging-container');
+      const dsoContainer = document.getElementById('subview-dso-container');
+
+      if (!btnAging || !btnDso || !agingContainer || !dsoContainer) return;
+
+      if (view === 'aging-view') {
+        btnAging.className = "flex-1 py-2.5 px-3 rounded-lg bg-slate-900 text-white shadow-xs flex items-center justify-center space-x-2 transition-all cursor-pointer";
+        btnDso.className = "flex-1 py-2.5 px-3 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center space-x-2 transition-all cursor-pointer";
+        agingContainer.style.display = 'block';
+        agingContainer.classList.remove('hidden');
+        dsoContainer.style.display = 'none';
+        dsoContainer.classList.add('hidden');
+      } else {
+        btnDso.className = "flex-1 py-2.5 px-3 rounded-lg bg-slate-900 text-white shadow-xs flex items-center justify-center space-x-2 transition-all cursor-pointer";
+        btnAging.className = "flex-1 py-2.5 px-3 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center space-x-2 transition-all cursor-pointer";
+        dsoContainer.style.display = 'block';
+        dsoContainer.classList.remove('hidden');
+        agingContainer.style.display = 'none';
+        agingContainer.classList.add('hidden');
+        renderMomBars();
+      }
+      safeCreateIcons();
+    }
+
+    // RENDER 12-MONTH HISTORICAL BARS AND PILLS
+    function renderHistoricalBars() {
+      const grid = document.getElementById('historical-bars-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      const maxVal = 7500000;
+
+      historicalData.forEach((item, index) => {
+        const heightPct = Math.min(100, Math.round((item.total / maxVal) * 100));
+        const p365Pct = Math.round((item.d365plus / item.total) * 100);
+        const p181Pct = Math.round((item.d181_365 / item.total) * 100);
+        const p91Pct = 100 - p365Pct - p181Pct;
+
+        const col = document.createElement('div');
+        col.className = "flex flex-col items-center justify-end h-full group cursor-pointer relative";
+        col.onclick = () => openDrilldownModal(item.month, item);
+
+        col.innerHTML = `
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-10 bg-slate-900 text-white text-[10px] font-bold py-1 px-2 rounded-md shadow-lg pointer-events-none z-30 whitespace-nowrap">
+            ${item.month}: ${formatMoney(item.total)}
+          </div>
+          <div class="w-full max-w-[42px] rounded-t flex flex-col-reverse overflow-hidden transition-all duration-200 group-hover:ring-2 group-hover:ring-brand-red group-hover:brightness-105" style="height: ${heightPct}%;">
+            <div class="w-full bg-rose-400" style="height: ${p91Pct}%;" title="91-180d: ${formatMoney(item.d91_180)}"></div>
+            <div class="w-full bg-red-600" style="height: ${p181Pct}%;" title="181-365d: ${formatMoney(item.d181_365)}"></div>
+            <div class="w-full bg-indigo-600" style="height: ${p365Pct}%;" title=">365d: ${formatMoney(item.d365plus)}"></div>
+          </div>
+        `;
+        grid.appendChild(col);
+      });
+    }
+
+    function renderHistoricalPills() {
+      const grid = document.getElementById('historical-pills-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      historicalData.forEach((item, index) => {
+        const isCurrentMonth = index === historicalData.length - 1;
+        const col = document.createElement('div');
+        col.className = "flex flex-col items-center space-y-1";
+
+        col.innerHTML = `
+          <span class="text-[11px] font-semibold ${isCurrentMonth ? 'text-brand-red font-extrabold' : 'text-slate-600'}">${item.month}</span>
+          <button onclick="openDrilldownModal('${item.month}', historicalData[${index}])" class="w-full py-1 px-1 rounded-md text-[10px] font-bold ${isCurrentMonth ? 'bg-red-50 text-brand-red border border-red-200 shadow-2xs' : 'bg-slate-50 text-slate-800 border border-slate-200 hover:bg-slate-100'} transition-all hover:scale-105 cursor-pointer">
+            ${formatShortMoney(item.total, item.usdTotal)}
+          </button>
+        `;
+        grid.appendChild(col);
+      });
+    }
+
+    // RENDER REAL VISUAL DUAL-BAR CHART (MoM AR vs Collection)
+    function renderMomBars() {
+      const barGrid = document.getElementById('mom-bars-grid');
+      const labelGrid = document.getElementById('mom-labels-grid');
+      if (!barGrid || !labelGrid) return;
+
+      barGrid.innerHTML = '';
+      labelGrid.innerHTML = '';
+      const maxAR = 3200000; // 32 Lakhs ceiling
+
+      // Update Y-Axis labels based on currency
+      const yTop = document.getElementById('mom-y-top');
+      const yMid2 = document.getElementById('mom-y-mid2');
+      const yMid1 = document.getElementById('mom-y-mid1');
+      if (yTop && yMid2 && yMid1) {
+        if (currentCurrency === 'USD') {
+          yTop.innerText = '$ 38k';
+          yMid2.innerText = '$ 25k';
+          yMid1.innerText = '$ 12k';
+        } else {
+          yTop.innerText = '₹ 30L';
+          yMid2.innerText = '₹ 20L';
+          yMid1.innerText = '₹ 10L';
+        }
+      }
+
+      momData.forEach((item, index) => {
+        const arHeightPct = Math.round((item.ar / maxAR) * 100);
+        const collHeightPct = Math.round((item.coll / maxAR) * 100);
+        const isLive = index === momData.length - 1;
+
+        // Bars column
+        const col = document.createElement('div');
+        col.className = "flex items-end justify-center space-x-1 h-full group relative cursor-pointer";
+        col.innerHTML = `
+          <!-- Hover Tooltip -->
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-12 bg-slate-900 text-white text-[10px] font-bold py-1.5 px-2.5 rounded-md shadow-xl pointer-events-none z-30 whitespace-nowrap text-center">
+            <span class="text-blue-400 block">${item.month} AR: ${formatMoney(item.ar)}</span>
+            <span class="text-emerald-400 block">Coll: ${formatMoney(item.coll)} (${item.rate}%)</span>
+          </div>
+
+          <!-- Total AR Bar (Blue) -->
+          <div class="bg-blue-500 hover:bg-blue-600 rounded-t w-2.5 sm:w-3.5 transition-all group-hover:brightness-110" style="height: ${arHeightPct}%;" title="Total AR: ${formatMoney(item.ar)}"></div>
+
+          <!-- Actual Collection Bar (Emerald) -->
+          <div class="bg-emerald-500 hover:bg-emerald-600 rounded-t w-2.5 sm:w-3.5 transition-all group-hover:brightness-110" style="height: ${collHeightPct}%;" title="Actual Coll: ${formatMoney(item.coll)}"></div>
+        `;
+        barGrid.appendChild(col);
+
+        // Label column
+        const lbl = document.createElement('div');
+        lbl.className = isLive ? 'text-brand-red font-bold' : 'text-slate-600';
+        lbl.innerText = item.month;
+        labelGrid.appendChild(lbl);
+      });
+    }
+
+    function filterHistoricalChart(mode) {
+      const btnAll = document.getElementById('btn-chart-all');
+      const btn365 = document.getElementById('btn-chart-365');
+      if (!btnAll || !btn365) return;
+
+      if (mode === '365') {
+        btn365.className = "px-3 py-1 rounded-md bg-white text-slate-900 shadow-xs cursor-pointer";
+        btnAll.className = "px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 cursor-pointer";
+      } else {
+        btnAll.className = "px-3 py-1 rounded-md bg-white text-slate-900 shadow-xs cursor-pointer";
+        btn365.className = "px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 cursor-pointer";
+      }
+      renderHistoricalBars();
+      renderHistoricalPills();
+    }
+
+    // RENDER SALES OWNER PORTFOLIO (RBAC AWARE)
+    function renderSalesPortfolio() {
+      const container = document.getElementById('sales-portfolio-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const managers = [
+        { name: "Rajesh Verma", territory: "West & Enterprise", total: 440000, status: "Bank Remittance Ready", color: "emerald" },
+        { name: "Ananya Roy", territory: "North & Govt", total: 550000, status: "TDS 2% Deduction Identified", color: "amber" },
+        { name: "Vikram Mehta", territory: "South Enterprise", total: 535000, status: "1 Billing Dispute Logged", color: "rose" },
+        { name: "Amitabh Sen", territory: "BFSI Strategic", total: 620000, status: "90+ Days Escalation", color: "purple" }
+      ];
+
+      managers.forEach(m => {
+        const isMatchedRole = activeRole === 'ALL' || activeRole === m.name;
+        const opacityClass = isMatchedRole ? 'opacity-100' : 'opacity-35 pointer-events-none';
+
+        const row = document.createElement('div');
+        row.className = `p-3 rounded-lg border border-slate-100 hover:border-slate-200 bg-slate-50/70 flex items-center justify-between text-xs transition-opacity ${opacityClass}`;
+        row.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <div class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 font-extrabold flex items-center justify-center text-[10px]">
+              ${m.name.split(' ').map(n=>n[0]).join('')}
+            </div>
+            <div>
+              <span class="font-bold text-slate-900 block">${m.name}</span>
+              <span class="text-[10px] text-slate-500 font-medium">${m.territory}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="font-extrabold text-slate-900 block">${formatMoney(m.total)}</span>
+            <span class="text-[10px] font-bold text-${m.color}-600">${m.status}</span>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // RENDER AR MASTER LEDGER
+    function renderLedger() {
+      const tbody = document.getElementById('ledger-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const searchVal = (document.getElementById('ledger-search-input')?.value || '').toLowerCase();
+      const agingFilter = document.getElementById('ledger-aging-filter')?.value || 'ALL';
+      const statusFilter = document.getElementById('ledger-status-filter')?.value || 'ALL';
+
+      const filtered = masterInvoices.filter(inv => {
+        if (activeRole !== 'ALL' && inv.am !== activeRole) return false;
+        if (searchVal && !inv.customer.toLowerCase().includes(searchVal) && !inv.netsuiteId.toLowerCase().includes(searchVal) && !inv.invoiceNo.toLowerCase().includes(searchVal)) {
+          return false;
+        }
+        if (agingFilter !== 'ALL' && inv.agingCategory !== agingFilter) return false;
+        if (statusFilter !== 'ALL' && inv.status !== statusFilter) return false;
+        return true;
+      });
+
+      const badgeCount = document.getElementById('badge-ledger-count');
+      if (badgeCount) badgeCount.innerText = `${filtered.length} Invoices`;
+
+      let totalExp = 0;
+      filtered.forEach(inv => totalExp += inv.amount);
+      const exposureEl = document.getElementById('ledger-total-exposure');
+      if (exposureEl) exposureEl.innerText = formatMoney(totalExp);
+
+      filtered.forEach(inv => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 transition-colors";
+
+        let statusBadge = '';
+        if (inv.settled) {
+          statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">Settled in NetSuite</span>';
+        } else if (inv.status === 'Matched') {
+          statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">Remittance Matched (98.5%)</span>';
+        } else if (inv.status === 'TDS Identified') {
+          statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">TDS 2% Sec 194C</span>';
+        } else if (inv.status === 'Disputed') {
+          statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200">Billing Dispute Hold</span>';
+        } else {
+          statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700">${inv.statusText}</span>`;
+        }
+
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-bold text-slate-900">${inv.customer}</td>
+          <td class="px-4 py-3 font-mono text-slate-500">${inv.netsuiteId}</td>
+          <td class="px-4 py-3 text-slate-600 font-medium">${inv.am}</td>
+          <td class="px-4 py-3 font-mono font-bold text-slate-800">${inv.invoiceNo}</td>
+          <td class="px-4 py-3 text-slate-500">${inv.dueDate}</td>
+          <td class="px-4 py-3">
+            <span class="font-bold ${inv.overdueDays > 60 ? 'text-rose-600' : inv.overdueDays > 30 ? 'text-amber-600' : 'text-slate-600'}">
+              ${inv.overdueDays}d overdue
+            </span>
+          </td>
+          <td class="px-4 py-3 text-right font-black text-slate-900">${formatMoney(inv.amount)}</td>
+          <td class="px-4 py-3">${statusBadge}</td>
+          <td class="px-4 py-3 text-center">
+            <button onclick="openCustomerInWarRoom('${inv.customer}')" class="px-2.5 py-1 text-[11px] font-bold text-brand-red bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors cursor-pointer">
+              Open 360
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      safeCreateIcons();
+    }
+
+    function filterLedgerTable() {
+      renderLedger();
+    }
+
+    function filterLedgerByAging(agingCategory) {
+      switchTab('tab-ledger');
+      const select = document.getElementById('ledger-aging-filter');
+      if (select) {
+        select.value = agingCategory;
+      }
+      renderLedger();
+    }
+
+    // RENDER CUSTOMER COLLECTIONS 360 WAR ROOM
+    function renderWarRoom() {
+      const select = document.getElementById('warroom-customer-select');
+      if (!select) return;
+      const prevVal = select.value;
+      select.innerHTML = '';
+
+      const customers = Object.keys(customerDossiers);
+      let firstVisible = null;
+
+      customers.forEach(cust => {
+        const dossier = customerDossiers[cust];
+        if (activeRole !== 'ALL' && dossier.am !== activeRole) return;
+        if (!firstVisible) firstVisible = cust;
+
+        const opt = document.createElement('option');
+        opt.value = cust;
+        opt.innerText = `${cust} (${dossier.am})`;
+        select.appendChild(opt);
+      });
+
+      if (select.options.length === 0) {
+        select.innerHTML = '<option value="">No accounts in your assigned portfolio</option>';
+        const snap = document.getElementById('customer-snapshot-bar');
+        if (snap) snap.innerHTML = '<div class="col-span-6 text-center text-slate-400 py-6">No accounts matching active Sales AM filter. Switch to Controller role to view all.</div>';
+        return;
+      }
+
+      if (prevVal && select.querySelector(`option[value="${prevVal}"]`)) {
+        select.value = prevVal;
+      } else {
+        select.value = firstVisible;
+      }
+
+      renderWarRoomCustomer(select.value);
+    }
+
+    function renderWarRoomCustomer(customerName) {
+      if (!customerName || !customerDossiers[customerName]) return;
+      const data = customerDossiers[customerName];
+
+      // 1. Snapshot Bar
+      const snapBar = document.getElementById('customer-snapshot-bar');
+      if (snapBar) {
+        snapBar.innerHTML = `
+          <div class="border-r border-slate-100 pr-2">
+            <span class="text-slate-400 block text-[10px] uppercase font-bold">NetSuite ID</span>
+            <span class="font-mono font-bold text-slate-800 text-xs">${data.netsuiteId}</span>
+          </div>
+          <div class="border-r border-slate-100 pr-2">
+            <span class="text-slate-400 block text-[10px] uppercase font-bold">Total Overdue</span>
+            <span class="font-black text-brand-red text-xs">${formatMoney(data.totalOverdue)}</span>
+          </div>
+          <div class="border-r border-slate-100 pr-2">
+            <span class="text-slate-400 block text-[10px] uppercase font-bold">Approved Credit Limit</span>
+            <span class="font-bold text-slate-800 text-xs">${formatMoney(data.creditLimit)}</span>
+          </div>
+          <div class="border-r border-slate-100 pr-2">
+            <span class="text-slate-400 block text-[10px] uppercase font-bold">Payment Terms</span>
+            <span class="font-medium text-slate-800 text-xs">${data.terms}</span>
+          </div>
+          <div class="border-r border-slate-100 pr-2">
+            <span class="text-slate-400 block text-[10px] uppercase font-bold">Credit Risk Tier</span>
+            <span class="font-bold ${data.risk.includes('High') ? 'text-rose-600' : 'text-amber-600'} text-xs">${data.risk}</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px] uppercase font-bold">Assigned Sales AM</span>
+            <span class="font-bold text-slate-900 text-xs">${data.am}</span>
+          </div>
+        `;
+      }
+
+      // 2. Invoices Table
+      const invTbody = document.getElementById('warroom-invoices-tbody');
+      if (invTbody) {
+        invTbody.innerHTML = '';
+        const custInvoices = masterInvoices.filter(i => i.customer === customerName);
+        const invCountEl = document.getElementById('warroom-invoice-count');
+        if (invCountEl) invCountEl.innerText = `${custInvoices.length} Invoices Listed`;
+
+        custInvoices.forEach(inv => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="px-3 py-2.5 font-mono font-bold text-slate-900">${inv.invoiceNo}</td>
+            <td class="px-3 py-2.5 text-slate-500">${inv.dueDate}</td>
+            <td class="px-3 py-2.5 font-bold ${inv.overdueDays > 60 ? 'text-rose-600' : 'text-amber-600'}">${inv.overdueDays}d overdue</td>
+            <td class="px-3 py-2.5 text-right font-black text-slate-900">${formatMoney(inv.amount)}</td>
+            <td class="px-3 py-2.5">
+              ${inv.settled ? '<span class="text-emerald-700 font-extrabold text-[10px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Settled</span>' : '<span class="text-amber-700 font-bold text-[10px] bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Overdue</span>'}
+            </td>
+          `;
+          invTbody.appendChild(row);
+        });
+      }
+
+      // 3. Remittance & Matching Engine Card
+      const remCard = document.getElementById('warroom-remittance-card');
+      const rem = data.remittance;
+
+      if (remCard) {
+        if (rem.canSettle) {
+          remCard.innerHTML = `
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="check-check" class="w-4 h-4 text-emerald-600"></i>
+                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Identified Bank Remittance & Matching</h3>
+              </div>
+              <span class="px-2 py-0.5 text-[10px] font-extrabold bg-emerald-100 text-emerald-800 rounded border border-emerald-200">${rem.confidence}</span>
+            </div>
+
+            <div class="mt-4 p-4 bg-emerald-50/40 rounded-xl border border-emerald-100 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-emerald-700 uppercase font-bold tracking-wider block">Candidate Bank Deposit</span>
+                  <span class="text-xs font-bold text-slate-900">${rem.txRef}</span>
+                </div>
+                <span class="text-base font-black text-slate-900">${formatMoney(rem.amount)}</span>
+              </div>
+
+              <p class="text-[11px] text-slate-600 leading-relaxed font-medium bg-white p-2.5 rounded-lg border border-slate-200/80">
+                ${rem.matchRule}
+              </p>
+
+              <div class="flex items-center justify-between pt-2">
+                <span class="text-[10px] text-slate-400">Simulates NetSuite bulk entry upon approval</span>
+                <button onclick="approveSettlement('${customerName}', ${rem.amount})" class="flex items-center space-x-1.5 px-4 py-2 text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-xs transition-all hover:scale-[1.02] cursor-pointer">
+                  <i data-lucide="check-circle" class="w-4 h-4"></i>
+                  <span>Approve & Settle ${formatMoney(rem.amount)}</span>
+                </button>
+              </div>
+            </div>
+          `;
+        } else {
+          remCard.innerHTML = `
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600"></i>
+                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Bank Reconciliation Exception</h3>
+              </div>
+              <span class="px-2 py-0.5 text-[10px] font-extrabold bg-rose-100 text-rose-800 rounded border border-rose-200">${rem.confidence}</span>
+            </div>
+
+            <div class="mt-4 p-4 bg-rose-50/50 rounded-xl border border-rose-100 space-y-3 text-xs">
+              <div class="text-slate-800 font-bold">${rem.txRef}</div>
+              <p class="text-slate-600 leading-relaxed font-medium">${rem.matchRule}</p>
+              <div class="pt-2 flex items-center justify-between">
+                <span class="text-[10px] text-slate-500">Automated dunning paused to protect relationship</span>
+                <button onclick="notifyAccountManager()" class="px-3 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-colors cursor-pointer">
+                  Escalate with AM
+                </button>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 4. AI Summary
+      const aiSummaryEl = document.getElementById('warroom-ai-summary');
+      if (aiSummaryEl) aiSummaryEl.innerHTML = data.aiSummary;
+
+      const notifyBtnText = document.getElementById('btn-notify-am-text');
+      if (notifyBtnText) notifyBtnText.innerText = `Notify AM (${data.am})`;
+
+      // 5. Email Feed
+      const emailFeed = document.getElementById('warroom-email-feed');
+      if (emailFeed) {
+        emailFeed.innerHTML = '';
+        data.emails.forEach(em => {
+          const item = document.createElement('div');
+          item.className = "p-3 rounded-lg border border-slate-200 bg-slate-50/70 text-xs space-y-1.5";
+          item.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-800 truncate max-w-[240px]">${em.from}</span>
+              <span class="text-[10px] text-slate-400 font-mono">${em.time}</span>
+            </div>
+            <div class="font-bold text-slate-900 text-[11px]">${em.subject}</div>
+            <div class="text-[11px] text-slate-600 leading-normal pt-1 border-t border-slate-200/60 font-medium">${em.body}</div>
+          `;
+          emailFeed.appendChild(item);
+        });
+      }
+
+      safeCreateIcons();
+    }
+
+    function openCustomerInWarRoom(customerName) {
+      switchTab('tab-warroom');
+      const select = document.getElementById('warroom-customer-select');
+      if (select) {
+        select.value = customerName;
+        renderWarRoomCustomer(customerName);
+      }
+    }
+
+    // APPROVE & SETTLE WORKFLOW
+    function approveSettlement(customerName, settledAmount) {
+      masterInvoices.forEach(inv => {
+        if (inv.customer === customerName) {
+          inv.settled = true;
+          inv.status = 'Settled';
+          inv.statusText = 'Settled in NetSuite';
+        }
+      });
+
+      const recoveredKPI = document.getElementById('kpi-cash-recovered');
+      if (recoveredKPI) {
+        const currentRec = parseInt(recoveredKPI.getAttribute('data-val') || '0') + settledAmount;
+        recoveredKPI.setAttribute('data-val', currentRec);
+        recoveredKPI.innerText = formatMoney(currentRec);
+      }
+
+      const settledCountEl = document.getElementById('kpi-settled-invoices-count');
+      if (settledCountEl) settledCountEl.innerText = `2 Invoices settled in NetSuite (Batch JRN-2026-992)`;
+
+      alert(`Settlement Confirmed!\n\nSimulated NetSuite Bulk Entry Generated:\nBatch Reference: JRN-2026-992\nEntity: ${customerName}\nAmount Applied: ${formatMoney(settledAmount)}\nCustomer ledger reconciled successfully.`);
+
+      updateAllViews();
+    }
+
+    // DRILLDOWN MODAL LOGIC WITH EXPLICIT DISPLAY
+    function openDrilldownModal(month, item) {
+      const modal = document.getElementById('drilldown-modal');
+      if (!modal) return;
+
+      document.getElementById('drilldown-modal-title').innerText = `${month} Overdue Breakdown (${formatMoney(item.total)})`;
+      document.getElementById('drilldown-modal-subtitle').innerText = `Overdue maturity composition: >365d, 181-365d, and 91-180d brackets`;
+
+      const content = document.getElementById('drilldown-modal-content');
+      content.innerHTML = `
+        <div class="grid grid-cols-3 gap-3 mb-4 text-center">
+          <div class="p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+            <span class="text-[10px] text-indigo-700 font-extrabold block">>365 Days</span>
+            <span class="text-sm font-black text-indigo-900">${formatMoney(item.d365plus)}</span>
+          </div>
+          <div class="p-3 bg-red-50 border border-red-100 rounded-lg">
+            <span class="text-[10px] text-red-700 font-extrabold block">181-365 Days</span>
+            <span class="text-sm font-black text-red-900">${formatMoney(item.d181_365)}</span>
+          </div>
+          <div class="p-3 bg-rose-50 border border-rose-100 rounded-lg">
+            <span class="text-[10px] text-rose-700 font-extrabold block">91-180 Days</span>
+            <span class="text-sm font-black text-rose-900">${formatMoney(item.d91_180)}</span>
+          </div>
+        </div>
+
+        <h4 class="text-xs font-extrabold text-slate-800 uppercase tracking-wider mb-2">Simulated Ledger Invoices for this Window:</h4>
+        <div class="divide-y divide-slate-100 border border-slate-200 rounded-lg overflow-hidden text-xs">
+          <div class="p-3 bg-slate-50 flex items-center justify-between font-bold text-slate-600">
+            <span>Customer & Invoice</span>
+            <span>Overdue Status</span>
+            <span>Exposure</span>
+          </div>
+          <div class="p-3 flex items-center justify-between bg-white hover:bg-slate-50">
+            <div>
+              <span class="font-bold text-slate-900 block">Infosys BPO Services</span>
+              <span class="text-[10px] font-mono text-slate-500">INV-2026-0702 · Amitabh Sen</span>
+            </div>
+            <span class="text-xs font-bold text-purple-700">>365 Days</span>
+            <span class="font-black text-slate-900">${formatMoney(420000)}</span>
+          </div>
+          <div class="p-3 flex items-center justify-between bg-white hover:bg-slate-50">
+            <div>
+              <span class="font-bold text-slate-900 block">Bharat Heavy Electricals</span>
+              <span class="text-[10px] font-mono text-slate-500">INV-2026-0689 · Ananya Roy</span>
+            </div>
+            <span class="text-xs font-bold text-red-700">181-365 Days</span>
+            <span class="font-black text-slate-900">${formatMoney(450000)}</span>
+          </div>
+          <div class="p-3 flex items-center justify-between bg-white hover:bg-slate-50">
+            <div>
+              <span class="font-bold text-slate-900 block">Apex Pharma Solutions</span>
+              <span class="text-[10px] font-mono text-slate-500">INV-2026-0811 · Vikram Mehta</span>
+            </div>
+            <span class="text-xs font-bold text-rose-700">91-180 Days</span>
+            <span class="font-black text-slate-900">${formatMoney(350000)}</span>
+          </div>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+      safeCreateIcons();
+    }
+
+    function closeDrilldownModal() {
+      const modal = document.getElementById('drilldown-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    // COPILOT CHAT LOGIC WITH EXPLICIT DISPLAY
+    function toggleCopilot() {
+      const panel = document.getElementById('copilot-panel');
+      if (!panel) return;
+      if (panel.style.display === 'none' || panel.style.display === '') {
+        panel.style.display = 'flex';
+      } else {
+        panel.style.display = 'none';
+      }
+      safeCreateIcons();
+    }
+
+    function askCopilot(question) {
+      document.getElementById('copilot-input').value = question;
+      handleCopilotSubmit(new Event('submit'));
+    }
+
+    function handleCopilotSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('copilot-input');
+      const q = input.value.trim();
+      if (!q) return;
+
+      appendChatMessage('user', q);
+      input.value = '';
+
+      setTimeout(() => {
+        let answer = "I checked our ledger records. ";
+        const ql = q.toLowerCase();
+
+        if (ql.includes('kaveri')) {
+          answer = "<strong>Kaveri Agro Industries Ltd:</strong> A deposit of <strong>₹2,00,000</strong> was received from HDFC Bank (TXN-90241) and matches 2 open invoices: INV-2026-1042 (₹1,20,000) and INV-2026-1088 (₹80,000). Remittance email from procurement@kaveriagro.com confirmed full payment. Ready for 1-click settlement in Customer 360.";
+        } else if (ql.includes('tata') || ql.includes('tds')) {
+          answer = "<strong>Tata Steel BSL Limited:</strong> Received bank credit of <strong>₹98,000</strong> against gross invoice INV-2026-0914 (₹1,00,000). The remaining ₹2,000 corresponds to exactly 2.0% Section 194C statutory withholding. We recommend posting the ₹2,000 as TDS Receivable with Form 16A reconciliation.";
+        } else if (ql.includes('dispute') || ql.includes('apex')) {
+          answer = "<strong>Apex Pharma Solutions:</strong> Billing dispute logged on INV-2026-0811 (₹3,50,000). Client claims duplicate billing for PO-9912. Automated email chasers are currently paused to protect client relationship while assigned AM Vikram Mehta investigates.";
+        } else if (ql.includes('90') || ql.includes('overdue')) {
+          answer = "Accounts with balances >90 days overdue total <strong>₹8,80,000</strong>, including <strong>Infosys BPO</strong> (₹4,20,000, 115 days overdue - in legal arbitration) and <strong>Bharat Heavy Electricals</strong> (₹4,50,000, 98 days overdue - 10% retention dispute).";
+        } else {
+          answer = `Based on the active AR snapshot: Total outstanding across active portfolios is <strong>${formatMoney(2145000)}</strong> with <strong>${formatMoney(443000)}</strong> in unallocated bank credits ready for reconciliation. Current Days Sales Outstanding is 42.5 days.`;
+        }
+
+        appendChatMessage('bot', answer);
+      }, 300);
+    }
+
+    function appendChatMessage(sender, html) {
+      const box = document.getElementById('copilot-messages');
+      if (!box) return;
+      const div = document.createElement('div');
+      div.className = "flex items-start space-x-2";
+
+      if (sender === 'user') {
+        div.className = "flex items-start justify-end space-x-2";
+        div.innerHTML = `
+          <div class="bg-brand-red text-white p-3 rounded-xl rounded-tr-none max-w-[85%] leading-relaxed font-semibold">
+            ${html}
+          </div>
+        `;
+      } else {
+        div.innerHTML = `
+          <div class="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0 text-slate-600">
+            <i data-lucide="bot" class="w-3.5 h-3.5 text-brand-red"></i>
+          </div>
+          <div class="bg-slate-100 text-slate-800 p-3 rounded-xl rounded-tl-none max-w-[85%] leading-relaxed font-medium">
+            ${html}
+          </div>
+        `;
+      }
+
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      safeCreateIcons();
+    }
+
+    // ACTIONS
+    function notifyAccountManager() {
+      alert(`Notification Dispatched!\n\nAutomated email & Teams alert sent to assigned Sales Account Manager with attached customer email thread and dispute details.`);
+    }
+
+    function downloadCustomerStatement() {
+      alert(`Statement Download Triggered!\n\nGenerating customer statement PDF (Customer 360 snapshot, open invoices ledger, and payment allocation receipts).`);
+    }
+
+    function simulateFileUpload(sourceName) {
+      alert(`File Ingestion Simulator:\n\nTriggered file browser for ${sourceName}.\nSelected file validated against NetSuite schema: 100% compliance. File staged for batch matching.`);
+    }
+
+    function exportNetSuiteCSV() {
+      const csvHeader = "Customer ID,Customer Name,Invoice Number,Due Date,Amount,Status,Assigned AM\n";
+      const rows = masterInvoices.map(i => `${i.netsuiteId},"${i.customer}",${i.invoiceNo},${i.dueDate},${i.amount},${i.status},"${i.am}"`).join("\n");
+      const blob = new Blob([csvHeader + rows], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `NetSuite_AR_Apply_Batch_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    function triggerBatchReconciliation() {
+      alert(`Reconciliation Batch Completed!\n\n- NetSuite Invoices Processed: 8\n- Bank Deposit Receipts Matched: 4\n- Remittance Emails Verified: 3\n- Ready for controller bulk approval in War Room.`);
+    }
+
+    function resetDemoData() {
+      masterInvoices.forEach(inv => inv.settled = false);
+      const recoveredKPI = document.getElementById('kpi-cash-recovered');
+      if (recoveredKPI) {
+        recoveredKPI.setAttribute('data-val', 0);
+        recoveredKPI.innerText = formatMoney(0);
+      }
+      const settledCountEl = document.getElementById('kpi-settled-invoices-count');
+      if (settledCountEl) settledCountEl.innerText = "0 Invoices settled in NetSuite";
+      updateAllViews();
+      alert("Live Demo Dataset successfully reloaded.");
+    }
+
+    // REFRESH ALL VIEWS ON CURRENCY / RBAC / DATA CHANGES
+    function updateAllViews() {
+      const kpiAr = document.getElementById('kpi-total-ar');
+      if (kpiAr) kpiAr.innerText = formatMoney(2145000);
+
+      const kpiUnalloc = document.getElementById('kpi-bank-unallocated');
+      if (kpiUnalloc) kpiUnalloc.innerText = formatMoney(443000);
+
+      const recKPI = document.getElementById('kpi-cash-recovered');
+      if (recKPI) {
+        const recVal = parseInt(recKPI.getAttribute('data-val') || '0');
+        recKPI.innerText = formatMoney(recVal);
+      }
+
+      const agCur = document.getElementById('aging-val-current');
+      if (agCur) agCur.innerText = formatMoney(530000);
+
+      const ag31 = document.getElementById('aging-val-3160');
+      if (ag31) ag31.innerText = formatMoney(385000);
+
+      const ag61 = document.getElementById('aging-val-6190');
+      if (ag61) ag61.innerText = formatMoney(350000);
+
+      const ag90 = document.getElementById('aging-val-90plus');
+      if (ag90) ag90.innerText = formatMoney(880000);
+
+      const dsoAr = document.getElementById('dso-ending-ar');
+      if (dsoAr) dsoAr.innerText = formatMoney(2145000);
+
+      const dsoSales = document.getElementById('dso-monthly-sales');
+      if (dsoSales) dsoSales.innerText = formatMoney(1515000);
+
+      renderHistoricalBars();
+      renderHistoricalPills();
+      renderMomBars();
+      renderSalesPortfolio();
+      renderLedger();
+      renderWarRoom();
+
+      safeCreateIcons();
+    }
+
+    // INITIALIZATION ON PAGE LOAD
+    window.addEventListener('DOMContentLoaded', () => {
+      updateAllViews();
+      safeCreateIcons();
+    });
+  </script>
+</body>
+</html>
